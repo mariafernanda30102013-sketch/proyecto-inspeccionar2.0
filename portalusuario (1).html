@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Portal · J&amp;M Inspecciones y Certificaciones</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700;800&family=Public+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="inicio.css">
+<style>.header{position:static}</style>
+</head><body>
+<header class="header noprint"><div class="header-content">
+  <a href="index.html" class="brand"><img src="img/jym.png" alt="Logo J&M"><div><strong>J&amp;M</strong><span>Inspecciones y Certificaciones</span></div></a>
+  <nav class="navigation"><a href="index.html#inicio">Inicio</a></nav>
+  <div id="nav" class="row"></div>
+</div></header>
+<main class="w" id="v"></main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script src="datos.js"></script>
+<script>
+const me=sesion();
+if(!me){location.href='login.html';throw new Error('Sin sesión')}
+
+let view='app',docH='',fname='reporte';
+function go(x){view=x;render();scrollTo(0,0)}
+function render(){
+  $('#nav').innerHTML=`<span class="mu">${E(me.n)} · ${RN[me.r]}</span><button onclick="cerrar()">Cerrar sesión</button>`;
+  $('#v').innerHTML=({app,doc})[view]();
+}
+
+/* ---------- Utilidades ---------- */
+const badge=s=>`<span class="b ${s}">${s}</span>`;
+function stats(u){
+  const l=db.v.filter(x=>x.to===u.e), dn=l.filter(x=>x.s==='completada'), tot=dn.reduce((a,x)=>a+(+x.fee||0),0);
+  return{dn:dn.length,pe:l.filter(x=>x.s==='pendiente').length,an:l.filter(x=>x.s==='anulada').length,paid:u.paid||0,owed:tot-(u.paid||0)}
+}
+function cards(s){return`<div class="grid"><div class="st"><b>${s.dn}</b><span>Servicios realizados</span></div><div class="st"><b>${s.pe}</b><span>Pendientes</span></div><div class="st"><b>${s.an}</b><span>Informes anulados</span></div><div class="st"><b>${COP(s.paid)}</b><span>Abonado</span></div><div class="st"><b>${COP(s.owed)}</b><span>Saldo por pagar</span></div></div>`}
+function setS(id,s){if(s==='anulada'&&!confirm('¿Anular esta visita?'))return;V(id).s=s;save();render()}
+function showDoc(id){location.href='informe.html?id='+id}
+
+function cargos(){
+  const R=[['admin','Administrador','Asigna visitas, ve toda la actividad, genera reportes para CISERCO y distribuidores.'],['inspector','Inspector','Recibe visitas, llena el formulario con fotos y genera el PDF para el usuario.'],['tecnico','Técnico','Consulta los trabajos asignados del día y los marca como realizados.']];
+  return`<h3 style="margin-top:24px">Cargos de la plataforma</h3><div class="grid">${R.map(r=>`<div class="st" ${r[0]===me.r?'style="border-color:var(--pr)"':''}><b style="font-size:1.1rem">${r[1]}${r[0]===me.r?' (tú)':''}</b><span>${r[2]}</span></div>`).join('')}</div>`}
+function app(){return(me.r==='admin'?admin():staff())+cargos()}
+
+/* ---------- ADMINISTRADOR ---------- */
+function admin(){
+  const st=db.u.filter(x=>x.r!=='admin'), all=db.v.slice().reverse(),
+        T={dn:db.v.filter(x=>x.s==='completada').length,pe:db.v.filter(x=>x.s==='pendiente').length,an:db.v.filter(x=>x.s==='anulada').length};
+  return`<h2 style="margin-top:24px">Panel del administrador</h2>
+<div class="grid"><div class="st"><b>${db.v.length}</b><span>Visitas totales</span></div><div class="st"><b>${T.pe}</b><span>Pendientes</span></div><div class="st"><b>${T.dn}</b><span>Completadas</span></div><div class="st"><b>${T.an}</b><span>Anuladas</span></div></div>
+<div class="card"><h3>Asignar visita</h3><form onsubmit="return assign(event)"><div class="f2">
+<div><label>Cliente</label><input id="c" required></div><div><label>Dirección</label><input id="a" required></div>
+<div><label>Celular (WhatsApp)</label><input id="t" required></div><div><label>Fecha</label><input id="d" type="date" value="${today}" required></div>
+<div><label>Asignar a</label><select id="to">${st.map(x=>`<option value="${E(x.e)}">${E(x.n)} (${RN[x.r]})</option>`).join('')}</select></div>
+<div><label>Valor del servicio (COP)</label><input id="fee" type="number" min="0" value="60000"></div></div><p></p><button class="p" ${st.length?'':'disabled'}>Asignar</button></form></div>
+<div class="card"><h3>Actividad de campo</h3><div class="tw"><table><tr><th>Fecha</th><th>Cliente</th><th>Asignado a</th><th>Estado</th><th></th></tr>${all.map(v=>`<tr><td>${E(v.d)}</td><td>${E(v.c)}<br><span class="mu">${E(v.a)}</span></td><td>${E(U(v.to)?.n)}</td><td>${badge(v.s)}</td><td>${v.s==='completada'?`<button onclick="showDoc(${v.id})">Ver informe</button>`:''}${v.s==='pendiente'?`<button class="d" onclick="setS(${v.id},'anulada')">Anular</button>`:''}</td></tr>`).join('')||'<tr><td colspan="5" class="mu">Aún no hay visitas. Asigna la primera arriba.</td></tr>'}</table></div></div>
+<div class="card"><h3>Personal y cuentas</h3><div class="tw"><table><tr><th>Nombre</th><th>Cargo</th><th>Realizados</th><th>Saldo</th><th></th></tr>${st.map(u=>{const s=stats(u);return`<tr><td>${E(u.n)}</td><td>${RN[u.r]}</td><td>${s.dn}</td><td>${COP(s.owed)}</td><td><button onclick="abono('${E(u.e)}')">Registrar abono</button></td></tr>`}).join('')||'<tr><td colspan="5" class="mu">No hay personal registrado.</td></tr>'}</table></div></div>
+<div class="card"><h3>Reportes</h3><div class="row"><button class="p" onclick="report('CISERCO')">Reporte a CISERCO</button><button class="p" onclick="report('Distribuidor')">Reporte a distribuidores</button></div></div>`
+}
+function assign(ev){
+  ev.preventDefault();
+  db.v.push({id:Date.now(),c:$('#c').value,a:$('#a').value,t:$('#t').value,d:$('#d').value,to:$('#to').value,fee:+$('#fee').value||0,s:'pendiente'});
+  save();render();return false;
+}
+function abono(e){const m=+prompt('Valor del abono (COP):');if(m>0){U(e).paid=(U(e).paid||0)+m;save();render()}}
+function report(k){
+  const l=db.v.filter(x=>x.s==='completada');fname='Reporte-'+k+'-'+today;
+  docH=`<h2>Reporte a ${k}</h2><p>J&amp;M Inspecciones y Certificaciones · Generado el ${today} · ${l.length} revisiones completadas</p><table><tr><th>Fecha</th><th>Usuario</th><th>Dirección</th><th>Cuenta</th><th>Resultado</th><th>Inspector/Técnico</th></tr>${l.map(v=>{const f=v.form||{};return`<tr><td>${E(v.d)}</td><td>${E(f.user||v.c)}</td><td>${E(v.a)}</td><td>${E(f.ctr||'-')}</td><td>${E(f.res||'Realizada')}</td><td>${E(U(v.to)?.n)}</td></tr>`}).join('')||'<tr><td colspan="6">Sin revisiones completadas.</td></tr>'}</table>`;
+  go('doc');
+}
+function doc(){
+  return`<div class="row noprint" style="margin:20px 0"><button onclick="go('app')">Volver</button><button class="p" onclick="pdfRep()">Descargar PDF</button><button onclick="print()">Imprimir</button></div><div class="doc">${docH}</div>`;
+}
+function pdfRep(){
+  if(typeof html2pdf==='undefined'){alert('Para descargar el PDF se necesita conexión a internet. Se abrirá la impresión: elige "Guardar como PDF".');print();return}
+  html2pdf().set({margin:10,filename:fname+'.pdf',html2canvas:{scale:2},jsPDF:{unit:'mm',format:'a4',orientation:'landscape'}}).from($('.doc')).save();
+}
+
+/* ---------- INSPECTOR Y TÉCNICO ---------- */
+function staff(){
+  const s=stats(me), mine=db.v.filter(x=>x.to===me.e).reverse(),
+        pe=mine.filter(x=>x.s==='pendiente'), ot=mine.filter(x=>x.s!=='pendiente'), ins=me.r==='inspector';
+  return`<h2 style="margin-top:24px">${ins?'Mis visitas':'Mis trabajos del día'}</h2>${cards(s)}
+<div class="card"><h3>Pendientes</h3>${pe.map(v=>`<div class="row" style="justify-content:space-between;align-items:center;border-bottom:1px solid var(--bd);padding:10px 0"><div><b>${E(v.c)}</b><br><span class="mu">${E(v.a)} · ${E(v.d)}${v.d===today?' · hoy':''}</span><br><span class="mu">Tel. ${E(v.t||'—')} · <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(v.a)}" target="_blank" rel="noopener">Ver en el mapa</a></span></div>${ins?`<button class="p" onclick="location.href='visita.html?id=${v.id}'">${v.fr?'Continuar visita':'Iniciar visita'}</button>`:`<button class="p" onclick="setS(${v.id},'completada')">Marcar realizado</button>`}</div>`).join('')||'<p class="mu">No tienes visitas pendientes.</p>'}</div>
+<div class="card"><h3>Historial y documentos</h3><div class="tw"><table>${ot.map(v=>`<tr><td>${E(v.d)}</td><td>${E(v.c)}</td><td>${badge(v.s)}</td><td>${v.s==='completada'&&v.fr?`<button onclick="showDoc(${v.id})">Ver informe</button>`:''}${ins&&v.s==='completada'?`<button class="d" onclick="setS(${v.id},'anulada')">Anular</button>`:''}</td></tr>`).join('')||'<tr><td class="mu">Aún no hay registros.</td></tr>'}</table></div></div>`
+}
+
+render();
+</script>
+</body></html>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Informe · J&amp;M Inspecciones y Certificaciones</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700;800&family=Public+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="inicio.css">
+<style>
+.header{position:static}
+.doc{font:11px/1.35 Arial,Helvetica,sans-serif;background:#fff;color:#000;padding:14px;min-width:760px}
+.doc h4{background:#0a5fd8;color:#fff;margin:10px 0 0;padding:3px 6px;font:700 11px Arial,sans-serif;text-transform:uppercase}
+.doc table{width:100%;border-collapse:collapse;font-size:10.5px}
+.doc th,.doc td{border:1px solid #999;padding:3px 5px;text-align:left;vertical-align:top;color:#000}
+.doc th{background:#eef2f8;font-weight:700}
+.dh{display:flex;gap:12px;align-items:center;border:1px solid #000;padding:8px}
+.dh img{height:48px}.dh .c{flex:1}.dh .f{border-left:1px solid #000;padding-left:10px;text-align:right;font-size:10px}
+.dh .f b{font-size:14px}
+.doc p{margin:4px 0;max-width:none}
+.fotos{display:flex;flex-wrap:wrap;gap:10px;margin-top:6px}.fotos figure{margin:0;width:48%}
+.fotos img{width:100%;height:auto;border:1px solid #999;display:block}.fotos figcaption{font-size:9.5px}
+.firmas{display:flex;gap:20px}.firmas>div{flex:1}.firmas img{height:70px;max-width:100%;display:block}
+.nota{margin:14px 0}
+</style></head><body>
+<header class="header noprint"><div class="header-content">
+  <a href="index.html" class="brand"><img src="img/jym.png" alt="Logo J&M"><div><strong>J&amp;M</strong><span>Inspecciones y Certificaciones</span></div></a>
+  <div class="sp"></div><a class="btn" href="portalusuario.html">← Volver al portal</a>
+</div></header>
+<main class="w">
+  <div class="row noprint" style="margin:18px 0" id="bar"></div>
+  <div class="tw"><div id="doc" class="doc"></div></div>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script src="datos.js"></script>
+<script src="fr001.js"></script>
+<script>
+const me=sesion();
+const id=new URLSearchParams(location.search).get('id'), v=me&&V(id);
+if(!me||!v||(me.r!=='admin'&&v.to!==me.e)){
+  document.querySelector('main').innerHTML=`<div class="card auth"><h2>${me?'No se encontró el informe':'Primero inicia sesión'}</h2><a class="btn p" href="${me?'portalusuario.html':'login.html'}">${me?'Ir al portal':'Iniciar sesión'}</a></div>`;
+  throw new Error('Informe no disponible');
+}
+v.fr=v.fr||{};v.dib=v.dib||{};v.fotos=v.fotos||{};
+const g=k=>(v.fr[k]||[''])[0]||'', gs=k=>v.fr[k]||[];
+const kv=a=>{let h='<table>';for(let i=0;i<a.length;i+=2)h+=`<tr><th>${E(a[i][0])}</th><td>${E(a[i][1]||'—')}</td>${a[i+1]?`<th>${E(a[i+1][0])}</th><td>${E(a[i+1][1]||'—')}</td>`:'<td colspan="2"></td>'}</tr>`;return h+'</table>'};
+const hora=ms=>new Date(ms).toLocaleString('es-CO');
+const logo=location.protocol==='file:'?'':'<img src="img/jym.png" alt="">';   // desde un archivo local el logo impediría generar el PDF
+
+const sec=SEC.map(s=>`<h4>${s.t}</h4><table><tr><th style="width:62px">Clase</th><th>Descripción</th><th style="width:60px">Cumple</th></tr>${s.it.map((it,i)=>`<tr><td>${it[0]==='c'?'Crítico':'No crítico'}</td><td>${E(it[1])}${(it[2]||[]).map(([k,l])=>` · <b>${E(l)}:</b> ${E(g(`s_${s.id}_${i}_${k}`)||'—')}`).join('')}</td><td><b>${E(g(`s_${s.id}_${i}`)||'—')}</b></td></tr>`).join('')}</table>`);
+const recs=Array.from({length:v.nrec||1},(_,i)=>{const p=`r${i}_`;
+  const arts=[1,2,3,4].filter(m=>g(p+'a'+m)).map(m=>`${E(g(p+'a'+m))} (${E(g(p+'k'+m)||'—')} kW, CO ${E(g(p+'c'+m)||'—')} ppm)`).join('; ')||'—';
+  return`<h4>Recinto ${L[i]}</h4>`+kv([['Descripción',g(p+'desc')],['CO ambiente sin artefactos (ppm)',g(p+'coamb')],['Volumen disponible (m³)',g(p+'vol')],['Potencia total (kW)',g(p+'pt')],['Método de ventilación',g(p+'met')],['Vol. adyacente (m³)',g(p+'vadj')],['Superior: área mín. / abertura (cm²)',(g(p+'smin')||'—')+' / '+(g(p+'sab')||'—')],['Inferior: área mín. / abertura (cm²)',(g(p+'imin')||'—')+' / '+(g(p+'iab')||'—')],['Factor de reducción',g(p+'fac')],['Cumple monoespacio',g(p+'mono')]])+`<p><b>Artefactos:</b> ${arts}<br><b>Anexos NTC 3631:</b> ${E(gs(p+'anx').join(', ')||'—')}</p>`}).join('');
+const dib=k=>v.dib[k]?`<img src="${v.dib[k]}" alt="" style="max-width:100%;max-height:200px;border:1px solid #999">`:'<p>—</p>';
+
+$('#doc').innerHTML=`
+<div class="dh">${logo}<div class="c"><b style="font-size:13px">${EMPRESA.n}</b><br>${EMPRESA.sub}<br>${EMPRESA.l1}<br>${EMPRESA.l2}</div><div class="f"><b>${EMPRESA.fr}</b><br>${EMPRESA.ft}<br>${EMPRESA.ver}<br><b>Consecutivo: ${E(g('cons')||'—')}</b></div></div>
+<h4>Identificación de la instalación</h4>
+${kv([['Hora inicio inspección',g('hini')],['Hora final inspección',g('hfin')],...ID_CAMPOS.map(([n,l])=>[l,g(n)])])}
+${sec.slice(0,3).join('')}
+<h4>Recintos y artefactos encontrados</h4>${recs}
+${kv([['Cumple vacío interno',g('vacio')],['Edificación anterior al 25/04/2014',g('a2014')],['Ductos que evacuan al vacío interno',g('nduc')],['Fecha licencia de construcción / escritura',g('lic')],['Informa próxima inspección (≤ 3 años)',g('prox3')]])}
+${sec.slice(3).join('')}
+<h4>Isométrico</h4>${dib('iso')}<h4>Esquema en planta de los recintos</h4>${dib('esq')}
+<h4>Materiales y tuberías</h4>${kv([['Materiales',gs('mat').join(', ')],['Diámetros',gs('diam').join(', ')],['Tipo de instalación',g('tinst')],['Longitud (m)',g('longi')]])}
+<p><b>Observaciones o detalle de hallazgos:</b> ${E(g('obs')||'—')}</p><p><b>Aspectos para el distribuidor (no afectan la conformidad):</b> ${E(g('obsd')||'—')}</p>
+<h4>Cierre</h4>${kv([['Este documento constituye',g('constit')],['Fecha de inspección y emisión',g('femis')],['Matriz inspeccionada',g('matriz')],['OIA / consecutivo / fecha',[g('oia'),g('oiac'),g('oiaf')].filter(Boolean).join(' · ')],...EQUIPOS.map(([n,l])=>[l,g(n)]),['Resultados de la inspección',g('res')],['Radicado N°',g('rad')],['Estado del servicio',g('serv')]])}
+<p><b>Acciones realizadas:</b> ${E(gs('acc').join('; ')||'—')}</p>
+<p style="font-size:14px"><b>RESULTADO DE LA INSPECCIÓN: ${E(g('conf')||'—')}</b></p>
+<div class="firmas" style="margin-top:8px">
+ <div><b>Usuario</b><br>${E(g('unom')||'—')} · C.C. ${E(g('ucc')||'—')}<br>Vínculo: ${E(g('uvinc')||'—')}<br><small>Declaro y acepto que conozco el resultado de la inspección.</small>${v.dib.fu?`<img src="${v.dib.fu}" alt="Firma usuario">`:''}</div>
+ <div><b>Inspector</b><br>${E(g('inom')||'—')} · C.C. ${E(g('icc')||'—')}<br>CCL: ${E(g('iccl')||'—')} · Expedido por: ${E(g('iexp')||'—')}${v.dib.fi?`<img src="${v.dib.fi}" alt="Firma inspector">`:''}</div>
+</div>
+<div class="html2pdf__page-break"></div>
+<h4>Registro fotográfico</h4>
+<div class="fotos">${PASOS.filter(p=>v.fotos[p.k]).map(p=>{const f=v.fotos[p.k];return`<figure><img src="${f.img}" alt=""><figcaption><b>${p.t}</b> · ${hora(f.ms)}${f.lat!==null?` · ${f.lat}, ${f.lng}`:''}</figcaption></figure>`}).join('')||'<p>Sin fotos.</p>'}</div>`;
+
+/* ---------- Botones ---------- */
+const tel=String(g('tel')||v.t||'').replace(/\D/g,'');
+const wa=`https://wa.me/57${tel}?text=${encodeURIComponent('Hola '+(g('nombre')||v.c)+', le enviamos el informe de la revisión de su instalación de gas natural (consecutivo '+(g('cons')||'—')+'). Resultado: '+(g('conf')||'—')+'. J&M Inspección y Certificación.')}`;
+$('#bar').innerHTML=`<button class="p" onclick="pdf()">Descargar PDF</button><a class="btn" href="${wa}" target="_blank" rel="noopener">Enviar por WhatsApp</a>${v.to===me.e&&v.s!=='anulada'?`<a class="btn" href="visita.html?id=${id}">Corregir informe</a>`:''}<button onclick="print()">Imprimir</button>`;
+function pdf(){
+  if(typeof html2pdf==='undefined'){alert('Para descargar el PDF se necesita conexión a internet. Se abrirá la impresión: elige "Guardar como PDF".');print();return}
+  const b=$('#bar button');b.disabled=true;b.textContent='Generando PDF…';
+  html2pdf().set({margin:8,filename:'Informe-'+(g('cons')||id)+'.pdf',image:{type:'jpeg',quality:.92},html2canvas:{scale:2,useCORS:true},jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},pagebreak:{mode:['css','legacy'],avoid:['tr','figure','p']}})
+   .from($('#doc')).save().then(()=>{b.disabled=false;b.textContent='Descargar PDF'}).catch(e=>{b.disabled=false;b.textContent='Descargar PDF';alert('No se pudo generar el PDF. Usa "Imprimir" y elige "Guardar como PDF".')});
+}
+</script>
+</body></html>

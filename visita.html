@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Visita · J&amp;M Inspecciones y Certificaciones</title>
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700;800&family=Public+Sans:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="inicio.css">
+  <style>
+    .header {
+      position: static
+    }
+
+    .info {
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      background: var(--bg);
+      padding: 6px 0 8px;
+      border-bottom: 1px solid var(--bd)
+    }
+
+    .ban {
+      font-size: .88rem;
+      font-weight: 600;
+      color: var(--wn)
+    }
+
+    .slot img {
+      width: 100%;
+      max-height: 240px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin: 8px 0 2px;
+      display: block
+    }
+
+    .cap {
+      font-size: .8rem;
+      color: var(--mu)
+    }
+
+    .tm {
+      font: 800 1.3rem "Bricolage Grotesque", sans-serif;
+      margin: 6px 0
+    }
+
+    button[disabled] {
+      opacity: .45;
+      cursor: not-allowed
+    }
+
+    .it {
+      padding: 10px 0;
+      border-bottom: 1px solid var(--bd)
+    }
+
+    .it:last-child {
+      border: 0
+    }
+
+    .chip {
+      position: relative;
+      display: inline-block;
+      margin: 3px 4px 3px 0
+    }
+
+    .chip input {
+      position: absolute;
+      opacity: 0
+    }
+
+    .chip span {
+      display: inline-block;
+      border: 1px solid var(--bd);
+      border-radius: 8px;
+      padding: 7px 12px;
+      font-weight: 600;
+      font-size: .9rem;
+      cursor: pointer;
+      background: var(--card)
+    }
+
+    .chip input:checked+span {
+      background: var(--pr);
+      color: var(--prt);
+      border-color: var(--pr)
+    }
+
+    .chip input:focus-visible+span {
+      outline: 3px solid var(--pr);
+      outline-offset: 2px
+    }
+
+    .f3 {
+      display: grid;
+      gap: 0 10px;
+      grid-template-columns: 2fr 1fr 1fr
+    }
+
+    .tri button {
+      padding: 4px 9px;
+      font-size: .8rem
+    }
+
+    canvas {
+      touch-action: none;
+      width: 100%;
+      display: block;
+      background: #fff;
+      border: 1px solid var(--bd);
+      border-radius: 8px
+    }
+  </style>
+</head>
+
+<body>
+  <header class="header">
+    <div class="header-content">
+      <a href="index.html" class="brand"><img src="img/jym.png" alt="Logo J&M">
+        <div><strong>J&amp;M</strong><span>Inspecciones y Certificaciones</span></div>
+      </a>
+      <div class="sp"></div><a class="btn" href="portalusuario.html">← Volver al portal</a>
+    </div>
+  </header>
+  <main class="w">
+    <div class="info">
+      <h2 id="ttl" style="margin:10px 0 0;font-size:1.2rem"></h2>
+      <div class="mu" id="sub" style="font-size:.85rem"></div>
+      <div class="row" style="margin:8px 0"><button id="b1" onclick="tab(1)">Fotos</button><button id="b2"
+          onclick="tab(2)">Formulario</button></div>
+      <div class="ban" id="ban"></div>
+    </div>
+    <section id="p1"></section>
+    <form id="fr" oninput="guardar()" onsubmit="return false" style="display:none"></form>
+  </main>
+
+  <script src="datos.js"></script>
+  <script src="fr001.js"></script>
+  <script>
+    const me = sesion();
+    const id = new URLSearchParams(location.search).get('id'), v = me && V(id);
+    if (!me || !v || v.to !== me.e) {
+      document.querySelector('main').innerHTML = `<div class="card auth"><h2>${me ? 'No se encontró la visita' : 'Primero inicia sesión'}</h2><p class="mu">${me ? 'Entra desde el portal con el botón <b>Iniciar visita</b> de una visita pendiente.' : 'Entra con tu usuario de inspector.'}</p><a class="btn p" href="${me ? 'portalusuario.html' : 'login.html'}">${me ? 'Ir al portal' : 'Iniciar sesión'}</a></div>`;
+      throw new Error('Visita no disponible');
+    }
+    v.fotos = v.fotos || {}; v.fr = v.fr || {}; v.dib = v.dib || {};
+    const g = k => (v.fr[k] || [''])[0] || '';
+    [['nombre', v.c], ['dir', v.a], ['tel', v.t || ''], ['hini', new Date().toTimeString().slice(0, 5)], ['femis', today], ['inom', me.n]].forEach(([k, x]) => { if (!v.fr[k]) v.fr[k] = [x] });
+    let nrec = v.nrec || 1, padsOk = 0, T;
+
+    /* ---------- Piezas del formulario ---------- */
+    const inp = (n, l, t = 'text') => `<div><label>${l}</label><input name="${n}" type="${t}"${t === 'number' ? ' step="any" inputmode="decimal"' : ''}></div>`;
+    const sel = (n, l, o) => `<div><label>${l}</label><select name="${n}"><option value="">—</option>${o.map(x => `<option>${x}</option>`).join('')}</select></div>`;
+    const chips = (n, o) => o.map(x => `<label class="chip"><input type="radio" name="${n}" value="${x}"><span>${x}</span></label>`).join('');
+    const checks = (n, o) => o.map(x => `<label class="chip"><input type="checkbox" name="${n}" value="${x}"><span>${x}</span></label>`).join('');
+    const pad = (k, h) => `<div><canvas id="cv_${k}" height="${h}"></canvas><button type="button" style="margin-top:6px" onclick="limpiar('${k}')">Borrar</button></div>`;
+    const fila = (s, i, [c, t, ex]) => `<div class="it"><div><span class="b ${c === 'c' ? 'anulada' : 'pendiente'}">${c === 'c' ? 'Crítico' : 'No crítico'}</span> ${t}</div>${ex ? `<div class="f2">${ex.map(([k, l]) => inp(`s_${s}_${i}_${k}`, l, 'number')).join('')}</div>` : ''}<div>${chips(`s_${s}_${i}`, TRI)}</div></div>`;
+    const secCard = s => `<div class="card"><div class="row" style="justify-content:space-between;align-items:center"><h3 style="margin:0">${s.t}</h3><span class="tri mu">Marcar todos: ${TRI.map(x => `<button type="button" onclick="todos('${s.id}','${x}')">${x}</button>`).join(' ')}</span></div>${s.it.map((it, i) => fila(s.id, i, it)).join('')}</div>`;
+    const rec = i => {
+      const p = `r${i}_`; return `<div class="card" style="background:var(--bg)"><h3>Recinto ${L[i]}</h3><div class="f2">${inp(p + 'desc', 'Descripción')}${inp(p + 'coamb', 'CO en ambiente sin artefactos (ppm)', 'number')}${inp(p + 'vol', 'Volumen disponible (m³)', 'number')}${sel(p + 'met', 'Método de ventilación', METODOS)}${inp(p + 'vadj', 'Vol. adyacente (m³)', 'number')}${inp(p + 'fac', 'Factor de reducción', 'number')}${inp(p + 'smin', 'Superior: área mínima (cm²)', 'number')}${inp(p + 'sab', 'Superior: área abertura (cm²)', 'number')}${inp(p + 'imin', 'Inferior: área mínima (cm²)', 'number')}${inp(p + 'iab', 'Inferior: área abertura (cm²)', 'number')}</div>
+<label>Cumple monoespacio</label><div>${chips(p + 'mono', TRI)}</div><label>Anexos NTC 3631</label><div>${checks(p + 'anx', ANEXOS)}</div><h3 style="margin-top:14px">Artefactos</h3>${[1, 2, 3, 4].map(n => `<div class="f3">${inp(p + 'a' + n, 'Artefacto ' + n)}${inp(p + 'k' + n, 'Potencia (kW)', 'number')}${inp(p + 'c' + n, 'CO prueba (ppm)', 'number')}</div>`).join('')}<div class="f2">${inp(p + 'pt', 'Potencia total (kW) · automática', 'number').replace('<input', '<input readonly')}</div></div>`
+    };
+
+    function armar() {
+      const idc = `<div class="card"><h3>Identificación de la instalación</h3><div class="f2">${inp('cons', 'Consecutivo del informe')}${inp('hini', 'Hora inicio inspección', 'time')}${inp('hfin', 'Hora final inspección', 'time')}${ID_CAMPOS.map(([n, l, t]) => Array.isArray(t) ? sel(n, l, t) : inp(n, l, t || 'text')).join('')}</div></div>`;
+      const recs = `<div class="card"><h3>Recintos y artefactos encontrados</h3><div id="recs"></div><div class="row"><button type="button" onclick="addRec()">+ Agregar recinto</button><button type="button" class="d" onclick="delRec()">Quitar último</button></div>
+  <label>Cumple vacío interno</label><div>${chips('vacio', TRI)}</div><label>La edificación fue proyectada o construida antes del 25/04/2014</label><div>${chips('a2014', TRI)}</div>
+  <div class="f2">${inp('nduc', 'Número de ductos que evacuan al vacío interno')}${inp('lic', 'Fecha de licencia de construcción o escritura', 'date')}</div>
+  <label>Informa al usuario la necesidad de realizar la próxima inspección en un plazo no mayor a tres (3) años</label><div>${chips('prox3', TRI)}</div></div>`;
+      const S = SEC.map(secCard); S.splice(3, 0, recs);
+      const dib = `<div class="card"><h3>Isométrico</h3><p class="mu">Dibuja con el dedo.</p>${pad('iso', 220)}<h3 style="margin-top:16px">Esquema en planta de los recintos</h3>${pad('esq', 220)}</div>`;
+      const tub = `<div class="card"><h3>Materiales y tuberías</h3><label>Materiales</label><div>${checks('mat', MATERIALES)}</div><label>Diámetros de las tuberías</label><div>${checks('diam', DIAM)}</div><label>Tipo de instalación</label><div>${chips('tinst', ['A la vista', 'Oculta'])}</div><div class="f2">${inp('longi', 'Longitud (m)', 'number')}</div>
+  <label>Observaciones o detalle de hallazgos</label><textarea name="obs" rows="3"></textarea><label>Aspectos para el distribuidor (que no afectan la conformidad)</label><textarea name="obsd" rows="3"></textarea></div>`;
+      const fin = `<div class="card"><h3>Cierre del informe</h3><label>Este documento constituye</label><div>${chips('constit', ['Certificado de conformidad', 'Informe de inspección'])}</div>
+  <div class="f2">${inp('femis', 'Fecha de inspección y emisión', 'date')}${inp('oia', 'OIA')}${inp('oiac', 'OIA · consecutivo')}${inp('oiaf', 'OIA · fecha', 'date')}</div><label>Matriz inspeccionada</label><div>${chips('matriz', TRI)}</div>
+  <h3 style="margin-top:14px">Equipos utilizados</h3><div class="f2">${EQUIPOS.map(([n, l]) => inp(n, l)).join('')}</div>
+  <h3 style="margin-top:14px">Resultados de la inspección</h3><div>${chips('res', ['Sin defectos', 'Defectos críticos', 'Defectos no críticos'])}</div><div class="f2">${inp('rad', 'Radicado N°')}</div>
+  <label>Acciones realizadas</label><div>${checks('acc', ACCIONES)}</div><label>Estado del servicio</label><div>${chips('serv', ['La instalación continúa en servicio', 'La instalación quedó sin servicio'])}</div>
+  <label>Resultado de la inspección</label><div>${chips('conf', ['CONFORME', 'NO CONFORME'])}</div><p class="mu" id="cnt" style="margin-top:6px"></p></div>
+  <div class="card"><h3>Firma del usuario</h3><p class="mu">Declaro y acepto que conozco el resultado de la inspección.</p><div class="f2">${inp('unom', 'Nombre')}${inp('ucc', 'Cédula')}${inp('uvinc', 'Vínculo con el inmueble')}</div>${pad('fu', 140)}</div>
+  <div class="card"><h3>Datos y firma del inspector</h3><div class="f2">${inp('inom', 'Nombre y apellido')}${inp('icc', 'Cédula')}${inp('iccl', 'CCL / certificación')}${inp('iexp', 'Expedido por')}</div>${pad('fi', 140)}</div>
+  <div class="row" style="margin-bottom:30px"><button class="p" onclick="terminar()">Generar informe</button><a class="btn" href="portalusuario.html">Guardar y salir</a></div>`;
+      return idc + S.join('') + dib + tub + fin;
+    }
+    function pintarRecs() { $('#recs').innerHTML = Array.from({ length: nrec }, (_, i) => rec(i)).join(''); restaurar($('#recs')) }
+    function addRec() { volcar(); if (nrec < 10) { nrec++; pintarRecs(); volcar() } }
+    function delRec() { if (nrec > 1) { volcar(); nrec--; pintarRecs(); volcar() } }
+    function restaurar(root) { root.querySelectorAll('[name]').forEach(el => { const a = v.fr[el.name]; if (!a) return; if (el.type === 'radio' || el.type === 'checkbox') el.checked = a.includes(el.value); else el.value = a[0] ?? '' }) }
+    function todos(s, val) { document.querySelectorAll(`input[type=radio][name^="s_${s}_"][value="${val}"]`).forEach(r => r.checked = true); guardar() }
+    function cuenta() { let c = 0, n = 0; SEC.forEach(s => s.it.forEach((it, i) => { if (document.querySelector(`input[name="s_${s.id}_${i}"][value="NO"]:checked`)) it[0] === 'c' ? c++ : n++ })); $('#cnt').textContent = `Ítems marcados NO — críticos: ${c} · no críticos: ${n}` }
+    function volcar() {
+      clearTimeout(T);
+      for (let i = 0; i < nrec; i++) { let s = 0; for (let n = 1; n < 5; n++)s += +document.querySelector(`[name=r${i}_k${n}]`).value || 0; document.querySelector(`[name=r${i}_pt]`).value = s ? +s.toFixed(3) : '' }
+      const fd = new FormData($('#fr')), o = {}; for (const k of new Set(fd.keys())) o[k] = fd.getAll(k);
+      v.fr = o; v.nrec = nrec; save(); cuenta();
+    }
+    function guardar() { clearTimeout(T); T = setTimeout(volcar, 300) }
+    addEventListener('pagehide', () => { clearTimeout(T); volcar() });
+
+    /* ---------- Firma y dibujo con el dedo ---------- */
+    function iniPad(k) {
+      const c = $('#cv_' + k), x = c.getContext('2d'); c.width = c.clientWidth;
+      if (v.dib[k]) { const i = new Image(); i.onload = () => x.drawImage(i, 0, 0, c.width, c.height); i.src = v.dib[k] }
+      x.lineWidth = 2; x.lineCap = 'round'; x.strokeStyle = '#000'; let d = 0;
+      const P = e => { const r = c.getBoundingClientRect(); return [(e.clientX - r.left) * c.width / r.width, (e.clientY - r.top) * c.height / r.height] };
+      c.onpointerdown = e => { d = 1; c.setPointerCapture(e.pointerId); x.beginPath(); x.moveTo(...P(e)) };
+      c.onpointermove = e => { if (d) { x.lineTo(...P(e)); x.stroke() } };
+      c.onpointerup = () => { d = 0; v.dib[k] = c.toDataURL('image/png'); save() };
+    }
+    function limpiar(k) { const c = $('#cv_' + k); c.getContext('2d').clearRect(0, 0, c.width, c.height); delete v.dib[k]; save() }
+
+    /* ---------- Pestañas ---------- */
+    function tab(n) {
+      $('#p1').style.display = n == 1 ? '' : 'none'; $('#fr').style.display = n == 2 ? '' : 'none';
+      $('#b1').className = n == 1 ? 'p' : ''; $('#b2').className = n == 2 ? 'p' : '';
+      if (n == 2 && !padsOk) { padsOk = 1;['iso', 'esq', 'fu', 'fi'].forEach(iniPad) }
+      scrollTo(0, 0);
+    }
+
+    /* ---------- Fotos y cronómetros ---------- */
+    const was = {}, PH = PASOS.find(p => p.k === 'herm_fin'), PC = PASOS.find(p => p.k === 'co_fin');
+    const locked = p => p.after && (!v.fotos[p.after] || Date.now() < v.fotos[p.after].ms + p.min * 60000);
+    const hora = ms => new Date(ms).toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    function renderFotos() {
+      $('#p1').innerHTML = GRUPOS.map(gr => `<h3 style="margin-top:22px">${gr.n}</h3>` + gr.p.map(p => {
+        const f = v.fotos[p.k], lk = locked(p); was[p.k] = lk;
+        return `<div class="card slot"><div class="row" style="justify-content:space-between;align-items:center"><h3 style="margin:0">${p.t}</h3><span class="b ${f ? 'completada' : 'pendiente'}">${f ? 'Lista' : 'Falta'}</span></div>
+    <p class="mu" style="margin:4px 0">${p.h}</p>${p.after ? `<p class="tm" id="tm_${p.k}"></p>` : ''}
+    ${f ? `<img src="${f.img}" alt="${p.t}"><div class="cap">${hora(f.ms)}${f.lat !== null ? ` · ${f.lat}, ${f.lng}` : ' · sin ubicación'}</div>` : ''}
+    <div style="margin-top:8px">${lk ? `<button disabled>Tomar foto</button>` : `<label class="btn ${f ? '' : 'p'}" style="margin:0">${f ? 'Repetir foto' : 'Tomar foto'}<input type="file" accept="image/*" capture="environment" hidden onchange="foto('${p.k}',this)"></label>`}</div></div>`
+      }).join('')).join('');
+      tick();
+    }
+    function tm(p) { const a = v.fotos[p.after]; if (!a) return 'sin iniciar'; if (v.fotos[p.k]) return 'hecha'; const r = a.ms + p.min * 60000 - Date.now(); if (r <= 0) return '¡lista la foto final!'; const s = Math.ceil(r / 1000); return String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0') }
+    function tick() {
+      const n = PASOS.filter(p => v.fotos[p.k]).length;
+      $('#ban').textContent = `Fotos ${n}/${PASOS.length} · Hermeticidad: ${tm(PH)} · Monóxido: ${tm(PC)}`;
+      PASOS.filter(p => p.after).forEach(p => {
+        const el = $('#tm_' + p.k), a = v.fotos[p.after];
+        if (el) {
+          if (!a) { el.textContent = 'Primero toma la foto inicial.'; el.style.color = 'var(--mu)' }
+          else { const t = tm(p); el.textContent = t === 'hecha' ? 'Foto final tomada' : t.includes('lista') ? 'Ya puedes tomar la foto final' : 'Faltan ' + t; el.style.color = t.includes('lista') || t === 'hecha' ? 'var(--ok)' : 'var(--wn)' }
+        }
+        if (was[p.k] && !locked(p)) { navigator.vibrate && navigator.vibrate([300, 150, 300]); renderFotos() }
+      });
+    }
+    function foto(k, inp) {
+      const file = inp.files[0]; if (!file) return;
+      const r = new FileReader();
+      r.onload = () => {
+        const im = new Image(); im.onload = () => {
+          const s = Math.min(1, 800 / im.width), c = document.createElement('canvas'); c.width = im.width * s; c.height = im.height * s; c.getContext('2d').drawImage(im, 0, 0, c.width, c.height);
+          const o = { img: c.toDataURL('image/jpeg', .6), ms: Date.now(), lat: null, lng: null };
+          const fin = () => { v.fotos[k] = o; PASOS.filter(p => p.after === k).forEach(p => delete v.fotos[p.k]); save(); renderFotos() };
+          if (navigator.geolocation) navigator.geolocation.getCurrentPosition(p => { o.lat = +p.coords.latitude.toFixed(6); o.lng = +p.coords.longitude.toFixed(6); fin() }, fin, { timeout: 6000, maximumAge: 60000 }); else fin();
+        }; im.src = r.result
+      };
+      r.readAsDataURL(file);
+    }
+
+    /* ---------- Terminar ---------- */
+    function terminar() {
+      volcar();
+      const falta = PASOS.filter(p => !v.fotos[p.k]).length;
+      if (falta) { alert('Faltan ' + falta + ' fotos obligatorias. Revísalas en la pestaña Fotos.'); tab(1); return }
+      if (!g('conf')) { alert('Marca el resultado de la inspección: CONFORME o NO CONFORME.'); return }
+      if (!g('hfin')) v.fr.hfin = [new Date().toTimeString().slice(0, 5)];
+      v.photos = PASOS.map(p => v.fotos[p.k].img);
+      v.form = { user: g('nombre'), cc: '', tel: g('tel'), ctr: g('idu'), res: g('conf') };   // compatibilidad con el portal y los reportes
+      v.s = 'completada'; save();
+      location.href = 'informe.html?id=' + id;
+    }
+
+    /* ---------- Inicio ---------- */
+    $('#ttl').textContent = 'Visita: ' + v.c; $('#sub').textContent = v.a + ' · ' + (v.t || '');
+    $('#fr').innerHTML = armar(); pintarRecs(); restaurar($('#fr')); cuenta();
+    renderFotos(); tab(1); setInterval(tick, 1000);
+  </script>
+</body>
+
+</html>

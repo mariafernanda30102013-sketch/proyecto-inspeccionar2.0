@@ -1,0 +1,655 @@
+:root {
+    --bg: #f3f6fa;
+    --card: #fff;
+    --tx: #0c1a2b;
+    --mu: #586a80;
+    --bd: #dde4ee;
+    --pr: #0a5fd8;
+    --prt: #fff;
+    --yl: #f5c400;
+    --ok: #127a3d;
+    --er: #b42318;
+    --wn: #9a6700;
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px)
+}
+
+@media(prefers-color-scheme:dark) {
+    :root:not([data-theme="light"]) {
+        --bg: #08111d;
+        --card: #0f1e31;
+        --tx: #e8eff8;
+        --mu: #93a6bd;
+        --bd: #1f3350;
+        --pr: #4b93ff;
+        --prt: #04122a;
+        --ok: #4cc27f;
+        --er: #ff7b72;
+        --wn: #e3b341
+    }
+}
+
+:root[data-theme="dark"] {
+    --bg: #08111d;
+    --card: #0f1e31;
+    --tx: #e8eff8;
+    --mu: #93a6bd;
+    --bd: #1f3350;
+    --pr: #4b93ff;
+    --prt: #04122a;
+    --ok: #4cc27f;
+    --er: #ff7b72;
+    --wn: #e3b341
+}
+
+html {
+    scroll-padding-top: env(safe-area-inset-top, 0px)
+}
+
+* {
+    box-sizing: border-box
+}
+
+body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--tx);
+    font: 16px/1.5 "Public Sans", system-ui, sans-serif
+}
+
+h1,
+h2,
+h3 {
+    font-family: "Bricolage Grotesque", "Public Sans", sans-serif;
+    line-height: 1.1;
+    margin: 0 0 .5em
+}
+
+h2 {
+    font-size: 1.5rem
+}
+
+h3 {
+    font-size: 1.1rem
+}
+
+p {
+    margin: 0 0 1em;
+    max-width: 62ch
+}
+
+.w {
+    max-width: 1050px;
+    margin: 0 auto;
+    padding: 0 18px
+}
+
+header.top {
+    background: var(--card);
+    border-bottom: 1px solid var(--bd)
+}
+
+header.top .w {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 60px;
+    flex-wrap: wrap
+}
+
+.brand {
+    font: 800 1.4rem "Bricolage Grotesque", sans-serif;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: inherit;
+    text-decoration: none
+}
+
+.brand i {
+    display: inline-block;
+    width: 14px;
+    height: 20px;
+    background: var(--yl);
+    border-radius: 50% 50% 50% 50%/60% 60% 40% 40%;
+    box-shadow: 0 0 0 3px var(--pr)
+}
+
+.brand small {
+    font: 500 .75rem "Public Sans";
+    color: var(--mu);
+    display: block;
+    margin-left: 2px
+}
+
+.sp {
+    flex: 1
+}
+
+button,
+.btn {
+    font: 600 .95rem "Public Sans", sans-serif;
+    border: 1px solid var(--bd);
+    background: var(--card);
+    color: var(--tx);
+    padding: 9px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+    outline: 3px solid var(--pr);
+    outline-offset: 2px
+}
+
+.p {
+    background: var(--pr);
+    color: var(--prt);
+    border-color: var(--pr)
+}
+
+.d {
+    color: var(--er)
+}
+
+.row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap
+}
+
+.card {
+    background: var(--card);
+    border: 1px solid var(--bd);
+    border-radius: 12px;
+    padding: 18px;
+    margin-bottom: 16px
+}
+
+.grid {
+    display: grid;
+    gap: 12px;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    margin-bottom: 16px
+}
+
+.st {
+    background: var(--card);
+    border: 1px solid var(--bd);
+    border-left: 5px solid var(--pr);
+    border-radius: 10px;
+    padding: 12px 14px
+}
+
+.st b {
+    font: 800 1.7rem "Bricolage Grotesque";
+    display: block
+}
+
+.st span {
+    color: var(--mu);
+    font-size: .85rem
+}
+
+label {
+    display: block;
+    font-weight: 600;
+    font-size: .88rem;
+    margin: 10px 0 4px
+}
+
+input,
+select,
+textarea {
+    width: 100%;
+    font: inherit;
+    padding: 10px;
+    border: 1px solid var(--bd);
+    border-radius: 8px;
+    background: var(--bg);
+    color: var(--tx)
+}
+
+.f2 {
+    display: grid;
+    gap: 0 14px;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr))
+}
+
+.auth {
+    max-width: 440px;
+    margin: 36px auto
+}
+
+.tw {
+    overflow-x: auto
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+    font-size: .92rem
+}
+
+th,
+td {
+    text-align: left;
+    padding: 9px 8px;
+    border-bottom: 1px solid var(--bd);
+    vertical-align: top
+}
+
+th {
+    color: var(--mu);
+    font-weight: 600
+}
+
+.b {
+    padding: 2px 9px;
+    border-radius: 99px;
+    font-size: .78rem;
+    font-weight: 600;
+    border: 1px solid currentColor;
+    white-space: nowrap
+}
+
+.pendiente {
+    color: var(--wn)
+}
+
+.completada {
+    color: var(--ok)
+}
+
+.anulada {
+    color: var(--er)
+}
+
+.msg {
+    color: var(--er);
+    font-weight: 600;
+    min-height: 1.4em
+}
+
+.mu {
+    color: var(--mu)
+}
+
+.ph {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    gap: 8px;
+    margin-top: 8px
+}
+
+.ph img {
+    width: 100%;
+    height: 90px;
+    object-fit: cover;
+    border-radius: 6px
+}
+
+.doc {
+    background: #fff;
+    color: #000;
+    padding: 26px;
+    border-radius: 8px;
+    border: 1px solid var(--bd)
+}
+
+.doc h2 {
+    border-bottom: 3px solid #0a5fd8;
+    padding-bottom: 6px
+}
+
+.doc td,
+.doc th {
+    border-bottom: 1px solid #ccc;
+    color: #000
+}
+
+.sig {
+    display: flex;
+    gap: 40px;
+    margin-top: 50px
+}
+
+.sig div {
+    flex: 1;
+    border-top: 1px solid #000;
+    padding-top: 4px;
+    font-size: .85rem
+}
+
+@media print {
+    .noprint {
+        display: none !important
+    }
+
+    body {
+        background: #fff
+    }
+
+    .doc {
+        border: 0;
+        padding: 0
+    }
+
+    .w {
+        max-width: none;
+        padding: 0
+    }
+}
+
+
+/* ===== Antes estaba en inicio.css ===== */
+/* Se carga DESPUÉS de style.css: <link rel="stylesheet" href="inicio.css"> */
+:root {
+    --em: #c81e1e
+}
+
+html {
+    scroll-behavior: smooth
+}
+
+@media(prefers-reduced-motion:reduce) {
+    html {
+        scroll-behavior: auto
+    }
+}
+
+section[id] {
+    scroll-margin-top: 90px
+}
+
+/* ---------- Encabezado ---------- */
+.header {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: var(--card);
+    border-bottom: 1px solid var(--bd)
+}
+
+.header-content {
+    max-width: 1050px;
+    margin: 0 auto;
+    padding: 8px 18px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap
+}
+
+.brand img {
+    height: 46px;
+    width: auto;
+    display: block
+}
+
+.brand div {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.1
+}
+
+.brand strong {
+    font: 800 1.3rem "Bricolage Grotesque", sans-serif
+}
+
+.brand span {
+    font: 500 .75rem "Public Sans", sans-serif;
+    color: var(--mu)
+}
+
+.navigation {
+    display: flex;
+    gap: 2px;
+    flex: 1;
+    justify-content: center;
+    flex-wrap: wrap
+}
+
+.navigation a {
+    padding: 8px 12px;
+    border-radius: 8px;
+    color: var(--tx);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: .95rem
+}
+
+.navigation a:hover {
+    background: var(--bg)
+}
+
+.access {
+    display: flex;
+    gap: 10px
+}
+
+@media(max-width:860px) {
+    .navigation {
+        order: 3;
+        flex-basis: 100%;
+        justify-content: flex-start;
+        overflow-x: auto;
+        flex-wrap: nowrap
+    }
+
+    .access {
+        margin-left: auto
+    }
+}
+
+/* ---------- Botón de emergencia ---------- */
+.emergency {
+    position: fixed;
+    right: 16px;
+    bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+    z-index: 30;
+    background: var(--em);
+    color: #fff;
+    font-weight: 700;
+    padding: 12px 18px;
+    border-radius: 99px;
+    text-decoration: none;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, .3)
+}
+
+.emergency:hover {
+    filter: brightness(1.1)
+}
+
+/* ---------- Inicio ---------- */
+.inicio {
+    max-width: 1050px;
+    margin: 0 auto;
+    padding: 56px 18px 40px;
+    display: grid;
+    gap: 28px;
+    grid-template-columns: 1.2fr 1fr;
+    align-items: center
+}
+
+.inicio h1 {
+    font-size: clamp(2.2rem, 6vw, 3.8rem);
+    font-weight: 800;
+    letter-spacing: -.02em
+}
+
+.inicio-buttons {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap
+}
+
+.certificado {
+    border: 3px solid var(--tx);
+    border-radius: 14px;
+    padding: 22px;
+    background: var(--card);
+    transform: rotate(2deg)
+}
+
+.certificado b {
+    display: block;
+    font: 800 1.3rem "Bricolage Grotesque", sans-serif;
+    margin-bottom: 6px
+}
+
+.certificado em {
+    font-style: normal;
+    background: var(--yl);
+    color: #111;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 4px
+}
+
+@media(prefers-reduced-motion:no-preference) {
+    .certificado {
+        animation: in .6s ease-out
+    }
+
+    @keyframes in {
+        from {
+            opacity: 0;
+            transform: rotate(-3deg) translateY(12px)
+        }
+    }
+}
+
+@media(max-width:720px) {
+    .inicio {
+        grid-template-columns: 1fr;
+        padding-top: 30px
+    }
+}
+
+/* ---------- Secciones ---------- */
+.servicios,
+.nosotros,
+.contacto {
+    max-width: 1050px;
+    margin: 0 auto;
+    padding: 44px 18px
+}
+
+.section-title h2 {
+    font-size: clamp(1.6rem, 4vw, 2.2rem);
+    font-weight: 800
+}
+
+.section-title p {
+    color: var(--mu)
+}
+
+.contacto-grid {
+    display: grid;
+    gap: 16px;
+    grid-template-columns: 1.2fr 1fr
+}
+
+@media(max-width:720px) {
+    .contacto-grid {
+        grid-template-columns: 1fr
+    }
+}
+
+.info-list {
+    list-style: none;
+    padding: 0;
+    margin: 0
+}
+
+.info-list li {
+    padding: 8px 0;
+    border-bottom: 1px solid var(--bd)
+}
+
+.info-list li:last-child {
+    border: 0
+}
+
+/* ---------- Footer ---------- */
+.footer {
+    background: var(--card);
+    border-top: 1px solid var(--bd);
+    margin-top: 30px
+}
+
+.footer-content {
+    max-width: 1050px;
+    margin: 0 auto;
+    padding: 30px 18px;
+    display: grid;
+    gap: 24px;
+    grid-template-columns: 1.3fr 1fr 1fr
+}
+
+@media(max-width:720px) {
+    .footer-content {
+        grid-template-columns: 1fr
+    }
+}
+
+.footer h3 {
+    font-size: 1rem
+}
+
+.footer-brand {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 10px
+}
+
+.footer-brand img {
+    height: 44px;
+    width: auto
+}
+
+.footer-brand div {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.1
+}
+
+.footer a {
+    color: var(--pr)
+}
+
+.footer-social {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap
+}
+
+.footer-social a {
+    border: 1px solid var(--bd);
+    border-radius: 8px;
+    padding: 7px 12px;
+    text-decoration: none;
+    font-weight: 600;
+    color: var(--tx)
+}
+
+.footer-bottom {
+    border-top: 1px solid var(--bd);
+    text-align: center;
+    padding: 14px 18px 80px;
+    color: var(--mu);
+    font-size: .85rem
+}
+
+.footer-bottom p {
+    margin: 0 auto
+}

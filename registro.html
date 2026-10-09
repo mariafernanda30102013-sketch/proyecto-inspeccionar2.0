@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Registro · J&amp;M Inspecciones y Certificaciones</title>
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700;800&family=Public+Sans:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="inicio.css">
+</head>
+
+<body>
+  <header class="header">
+    <div class="header-content">
+      <a href="index.html" class="brand">
+        <img src="img/jym.png" alt="Logo J&M Inspecciones y Certificaciones">
+        <div><strong>J&amp;M</strong><span>Inspecciones y Certificaciones</span></div>
+      </a>
+      <nav class="navigation" aria-label="Menú principal">
+        <a href="index.html#inicio">Inicio</a>
+        <a href="index.html#servicios">Servicios</a>
+        <a href="index.html#nosotros">Sobre nosotros</a>
+        <a href="index.html#contacto">Contáctanos</a>
+      </nav>
+      <div class="access">
+        <a href="login.html" class="btn">Iniciar sesión</a>
+        <a href="registro.html" class="btn p">Registrarme</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="w">
+    <form class="card auth" onsubmit="return registrar(event)">
+      <h2>Crear cuenta</h2>
+      <label for="n">Nombre completo</label><input id="n" required>
+      <label for="e">Correo</label><input id="e" type="email" required>
+      <label for="p">Contraseña</label><input id="p" type="password" minlength="4" required>
+      <label for="r">Cargo</label>
+      <select id="r" onchange="$('#cw').style.display=this.value==='admin'?'block':'none'">
+        <option value="inspector">Inspector</option>
+        <option value="tecnico">Técnico</option>
+        <option value="admin">Administrador</option>
+      </select>
+      <div id="cw" style="display:none">
+        <label for="cd">Código de administrador</label><input id="cd" placeholder="JIM-ADMIN">
+      </div>
+      <p class="msg" id="m"></p>
+      <button class="p" style="width:100%">Registrarme</button>
+    </form>
+  </main>
+
+  <script src="datos.js"></script>
+  <script>
+    const CODIGO_ADMIN = 'JIM-ADMIN';   // cámbialo por uno propio
+
+    function registrar(ev) {
+      ev.preventDefault();
+      const e = $('#e').value.trim().toLowerCase(), r = $('#r').value;
+      if (U(e)) { $('#m').textContent = 'Ese correo ya está registrado.'; return false }
+      if (r === 'admin' && $('#cd').value !== CODIGO_ADMIN) { $('#m').textContent = 'Código de administrador incorrecto.'; return false }
+      const u = { n: $('#n').value.trim(), e, p: $('#p').value, r, paid: 0 };
+      db.u.push(u); save();
+      iniciar(u);
+      location.href = 'portalusuario.html';
+      return false;
+    }
+  </script>
+</body>
+
+</html>
