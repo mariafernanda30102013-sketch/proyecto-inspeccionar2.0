@@ -3,6 +3,7 @@
 const EMPRESA={n:'J&M INSPECCIÓN Y CERTIFICACIÓN S.A.S',sub:'Organismo de inspección y certificación',
  l1:'NIT 901.522.884-7 · Calle 47A Sur # 84-57, Barrio Bretaña, Bogotá D.C.',
  l2:'Tel. Bogotá 3106276626 · Medellín 3106200664 · Línea nacional 3106276626',
+ acred:'ISO/IEC 17020:2012 · 13-OIN-023',
  fr:'FR-001',ft:'Inspección a instalaciones en servicio',ver:'Versión 2 · 25/01/2024'};
 const TRI=['SI','NO','N/A'], L='ABCDEFGHIJ';
 
