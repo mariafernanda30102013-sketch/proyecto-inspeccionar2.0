@@ -1,5 +1,6 @@
 /* FR-001 · definición del formulario. La usan visita.html (llenar) e informe.html (PDF).
    Transcrito de la foto del formato: compáralo con el papel y corrige textos aquí si hace falta. */
+
 const EMPRESA = {
   n: 'J&M INSPECCIÓN Y CERTIFICACIÓN S.A.S', sub: 'Organismo de inspección y certificación',
   l1: 'NIT 901.522.884-7 · Calle 47A Sur # 84-57, Barrio Bretaña, Bogotá D.C.',

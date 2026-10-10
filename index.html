@@ -1,183 +1,209 @@
 <!DOCTYPE html>
-<html lang="es">
+    <html lang="es">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-    <title>J&amp;M Inspecciones y Certificaciones</title>
-    <link rel="stylesheet"
-        href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700;800&family=Public+Sans:wght@400;500;600&display=swap">
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="inicio.css">
-</head>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+        <title>J&amp;M Inspecciones y Certificaciones</title>
+        <link rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700;800&family=Public+Sans:wght@400;500;600&display=swap">
+        <link rel="stylesheet" href="style.css">
+        <link rel="stylesheet" href="inicio.css">
+    </head>
 
-<body>
+    <body>
 
-    <!-- 8. BOTÓN DE EMERGENCIA (fijo en pantalla) -->
-    <a href="tel:146" class="emergency">Emergencias 164</a>
+        <!-- 8. BOTÓN DE EMERGENCIA (fijo en pantalla) -->
+        <a href="tel:164" class="emergency">Emergencias 164</a>
 
-    <!-- 1, 2 y 3. ENCABEZADO: logo, menú y botones de acceso -->
-    <header class="header">
-        <div class="header-content">
-            <a href="index.html" class="brand">
-                <img src="img/jym.png" alt="Logo J&M Inspecciones y Certificaciones">
-                <div><strong>J&amp;M</strong><span>Inspecciones y Certificaciones</span></div>
-            </a>
+        <!-- 1, 2 y 3. ENCABEZADO: logo, menú y botones de acceso -->
+        <header class="header">
+            <div class="header-content">
+                <a href="index.html" class="brand">
+                    <img src="img/jym.png" alt="Logo J&M Inspecciones y Certificaciones">
+                    <div><strong>J&amp;M</strong><span>Inspecciones y Certificaciones</span></div>
+                </a>
 
-            <nav class="navigation" aria-label="Menú principal">
-                <a href="index.html#inicio">Inicio</a>
-                <a href="index.html#servicios">Servicios</a>
-                <a href="index.html#nosotros">Sobre nosotros</a>
-                <a href="index.html#contacto">Contáctanos</a>
-            </nav>
+                <nav class="navigation" aria-label="Menú principal">
+                    <a href="index.html#inicio">Inicio</a>
+                    <a href="index.html#servicios">Servicios</a>
+                    <a href="index.html#nosotros">Sobre nosotros</a>
+                    <a href="index.html#contacto">Contáctanos</a>
+                </nav>
 
-            <div class="access">
-                <a href="login.html" class="btn">Iniciar sesión</a>
-                <a href="registro.html" class="btn p">Registrarme</a>
-            </div>
-        </div>
-    </header>
-
-    <main>
-
-        <!-- 4 y 5. INICIO -->
-        <section id="inicio" class="inicio">
-            <div class="inicio-content">
-                <h1>Revisiones de gas natural, sin papeles perdidos.</h1>
-                <p>J&amp;M Inspecciones y Certificaciones organiza las visitas a instalaciones de gas natural: el
-                    administrador asigna, el personal de campo diligencia el formulario con fotos y el usuario recibe su
-                    informe en PDF.</p>
-                <div class="inicio-buttons">
-                    <a href="registro.html" class="btn p">Crear mi cuenta</a>
-                    <a href="login.html" class="btn">Ya tengo cuenta</a>
+                <div class="access">
+                    <a href="login.html" class="btn">Iniciar sesión</a>
+                    <a href="registro.html" class="btn p">Registrarme</a>
                 </div>
             </div>
+        </header>
 
-            <div class="certificado" aria-label="Ejemplo de certificado">
-                <b>Certificado de revisión</b>
-                <p style="color:var(--mu)">Instalación interna de gas natural</p>
-                <em>Aprobada</em>
-            </div>
-        </section>
+        <main>
 
-        <!-- SERVICIOS (edita los textos a tu gusto) -->
-        <section id="servicios" class="servicios">
-            <div class="section-title">
-                <h2>Servicios</h2>
-                <p>Conoce nuestros servicios de inspección y certificación.</p>
-            </div>
-            <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(230px,1fr))">
-                <div class="card">
-                    <h3>Revisión periódica</h3>
-                    <p class="mu">Inspección de instalaciones internas de gas natural en viviendas y locales.</p>
+            <!-- 4 y 5. INICIO -->
+            <section id="inicio" class="inicio">
+                <div class="inicio-content">
+                    <h1>Revisiones de gas natural, sin papeles perdidos.</h1>
+                    <p>J&amp;M Inspecciones y Certificaciones organiza las visitas a instalaciones de gas natural: el
+                        administrador asigna, el personal de campo diligencia el formulario con fotos y el usuario
+                        recibe su
+                        informe en PDF.</p>
+                    <div class="inicio-buttons">
+                        <a href="registro.html" class="btn p">Crear mi cuenta</a>
+                        <a href="login.html" class="btn">Ya tengo cuenta</a>
+                    </div>
                 </div>
-                <div class="card">
-                    <h3>Instalaciones nuevas</h3>
-                    <p class="mu">Revisión y certificación de instalaciones recién construidas o ampliadas.</p>
-                </div>
-                <div class="card">
-                    <h3>Reinspección</h3>
-                    <p class="mu">Nueva visita para verificar que las correcciones pendientes quedaron bien hechas.</p>
-                </div>
-                <div class="card">
-                    <h3>Informe digital</h3>
-                    <p class="mu">Recibe tu informe con registro fotográfico en PDF, listo para compartir por WhatsApp.
-                    </p>
-                </div>
-            </div>
-        </section>
 
-        <!-- SOBRE NOSOTROS -->
-        <section id="nosotros" class="nosotros">
-            <div class="section-title">
-                <h2>Sobre nosotros</h2>
-            </div>
-            <p>En J&amp;M Inspecciones y Certificaciones trabajamos para brindar un servicio organizado y confiable en
-                los procesos de inspección y certificación de instalaciones de gas.</p>
-            <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr))">
-                <div class="st"><b style="font-size:1.1rem">Organización</b><span>Cada visita queda registrada de
-                        principio a fin.</span></div>
-                <div class="st"><b style="font-size:1.1rem">Confiabilidad</b><span>Informes claros con evidencia
-                        fotográfica.</span></div>
-                <div class="st"><b style="font-size:1.1rem">Seguridad</b><span>Revisiones hechas por personal en
-                        campo.</span></div>
-            </div>
-        </section>
+                <div class="certificado" aria-label="Ejemplo de certificado">
+                    <b>Certificado de revisión</b>
+                    <p style="color:var(--mu)">Instalación interna de gas natural</p>
+                    <em>Aprobada</em>
+                </div>
+            </section>
 
-        <!-- 3. CONTÁCTANOS (el formulario abre WhatsApp con el mensaje listo) -->
-        <section id="contacto" class="contacto">
-            <div class="section-title">
-                <h2>Contáctanos</h2>
-                <p>¿Necesitas programar una revisión? Escríbenos.</p>
-            </div>
-            <div class="contacto-grid">
-                <form class="card" onsubmit="return enviar(event)">
-                    <label for="nombre">Nombre</label><input id="nombre" required>
-                    <label for="cel">Celular</label><input id="cel" type="tel" required>
-                    <label for="serv">Servicio</label>
-                    <select id="serv">
-                        <option>Revisión periódica</option>
-                        <option>Instalación nueva</option>
-                        <option>Reinspección</option>
-                        <option>Otro</option>
-                    </select>
-                    <label for="msg">Mensaje</label><textarea id="msg" rows="4"
-                        placeholder="Dirección y lo que necesitas"></textarea>
-                    <p></p>
-                    <button class="p" style="width:100%">Enviar por WhatsApp</button>
-                </form>
-                <div class="card">
-                    <h3>Datos de contacto</h3>
-                    <ul class="info-list">
-                        <li>Teléfono: <b>+57 3209133126</b></li>
-                        <li>Correo: <b>contacto@jym.com</b></li>
-                        <li>Dirección: <b>carrera 2 # 6 - 60 </b></li>
-                        <li>Horario: <b>Lunes a viernes, 8:00 a. m. – 5:00 p. m.</b></li>
-                    </ul>
+            <!-- SERVICIOS (edita los textos a tu gusto) -->
+            <section id="servicios" class="servicios">
+                <div class="section-title">
+                    <h2>Servicios</h2>
+                    <p>Conoce nuestros servicios de inspección y certificación.</p>
+                </div>
+                <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(230px,1fr))">
+                    <div class="card">
+                        <h3>Revisión periódica</h3>
+                        <p class="mu">Inspección de instalaciones internas de gas natural en viviendas y locales.</p>
+                    </div>
+                    <div class="card">
+                        <h3>Instalaciones nuevas</h3>
+                        <p class="mu">Revisión y certificación de instalaciones recién construidas o ampliadas.</p>
+                    </div>
+                    <div class="card">
+                        <h3>Reinspección</h3>
+                        <p class="mu">Nueva visita para verificar que las correcciones pendientes quedaron bien hechas.
+                        </p>
+                    </div>
+                    <div class="card">
+                        <h3>Informe digital</h3>
+                        <p class="mu">Recibe tu informe con registro fotográfico en PDF, listo para compartir por
+                            WhatsApp.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SOBRE NOSOTROS -->
+            <section id="nosotros" class="nosotros">
+                <div class="section-title">
+                    <h2>Sobre nosotros</h2>
+                </div>
+                <p>En J&amp;M Inspecciones y Certificaciones trabajamos para brindar un servicio organizado y confiable
+                    en
+                    los procesos de inspección y certificación de instalaciones de gas.</p>
+                <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr))">
+                    <div class="st"><b style="font-size:1.1rem">Organización</b><span>Cada visita queda registrada de
+                            principio a fin.</span></div>
+                    <div class="st"><b style="font-size:1.1rem">Confiabilidad</b><span>Informes claros con evidencia
+                            fotográfica.</span></div>
+                    <div class="st"><b style="font-size:1.1rem">Seguridad</b><span>Revisiones hechas por personal en
+                            campo.</span></div>
+                </div>
+            </section>
+
+            <!-- 3. CONTÁCTANOS (el formulario abre WhatsApp con el mensaje listo) -->
+            <section id="contacto" class="contacto">
+                <div class="section-title">
+                    <h2>Contáctanos</h2>
+                    <p>¿Necesitas programar una revisión? Escríbenos.</p>
+                </div>
+                <div class="contacto-grid">
+                    <form class="card" onsubmit="return enviar(event)">
+                        <label for="nombre">Nombre</label><input id="nombre" required>
+                        <label for="cel">Celular</label><input id="cel" type="tel" required>
+                        <label for="serv">Servicio</label>
+                        <select id="serv">
+                            <option>Revisión periódica</option>
+                            <option>Instalación nueva</option>
+                            <option>Reinspección</option>
+                            <option>Otro</option>
+                        </select>
+                        <label for="msg">Mensaje</label><textarea id="msg" rows="4"
+                            placeholder="Dirección y lo que necesitas"></textarea>
+                        <p></p>
+                        <button class="p" style="width:100%">Enviar por WhatsApp</button>
+                    </form>
+                    <div class="card">
+                        <h3>Datos de contacto</h3>
+                        <ul class="info-list">
+                            <li>Teléfono: <b>+57 3209133126</b></li>
+                            <li>Correo: <b>contacto@jym.com</b></li>
+                            <li>Dirección: <b>carrera 2 # 6 - 60 </b></li>
+                            <li>Horario: <b>Lunes a viernes, 8:00 a. m. – 5:00 p. m.</b></li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+        <!-- 7. FOOTER -->
+        <footer class="footer">
+            <div class="footer-content">
+                <div>
+                    <div class="footer-brand">
+                        <img src="img/jym.png" alt="Logo J&M">
+                        <div><strong>J&amp;M</strong><span class="mu">Inspecciones y Certificaciones</span></div>
+                    </div>
+                    <p class="mu">Inspecciones y certificaciones de instalaciones de gas natural.</p>
+                </div>
+                <div>
+                    <h3>Contacto</h3>
+                    <p class="mu" style="margin:0">+57 3209133126 <br>contacto@jym.com<br>carrera 2 # 6 - 60</p>
+                </div>
+                <div>
+                    <h3>Síguenos</h3>
+                    <div class="footer-social">
+                        <a href="#" aria-label="Facebook">Facebook</a>
+                        <a href="#" aria-label="Instagram">Instagram</a>
+                        <a href="#" aria-label="WhatsApp">WhatsApp</a>
+                    </div>
                 </div>
             </div>
-        </section>
-
-    </main>
-
-    <!-- 7. FOOTER -->
-    <footer class="footer">
-        <div class="footer-content">
-            <div>
-                <div class="footer-brand">
-                    <img src="img/jym.png" alt="Logo J&M">
-                    <div><strong>J&amp;M</strong><span class="mu">Inspecciones y Certificaciones</span></div>
-                </div>
-                <p class="mu">Inspecciones y certificaciones de instalaciones de gas natural.</p>
+            <div class="footer-bottom">
+                <p>© 2026 J&amp;M Inspecciones y Certificaciones. Todos los derechos reservados.</p>
             </div>
-            <div>
-                <h3>Contacto</h3>
-                <p class="mu" style="margin:0">+57 3209133126 <br>contacto@jym.com<br>carrera 2 # 6 - 60</p>
-            </div>
-            <div>
-                <h3>Síguenos</h3>
-                <div class="footer-social">
-                    <a href="#" aria-label="Facebook">Facebook</a>
-                    <a href="#" aria-label="Instagram">Instagram</a>
-                    <a href="#" aria-label="WhatsApp">WhatsApp</a>
-                </div>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>© 2026 J&amp;M Inspecciones y Certificaciones. Todos los derechos reservados.</p>
-        </div>
-    </footer>
+        </footer>
 
-    <script>
-        const WHATSAPP = '3209133126';   // ← cambia por el WhatsApp de la empresa (57 + número, sin espacios)
-        function enviar(ev) {
-            ev.preventDefault();
-            const t = `Hola, soy ${$('#nombre').value}. Celular: ${$('#cel').value}. Servicio: ${$('#serv').value}. ${$('#msg').value}`;
-            window.open('https://wa.me/' + WHATSAPP + '?text=' + encodeURIComponent(t), '_blank', 'noopener');
-            return false;
-        }
-        function $(s) { return document.querySelector(s) }
-    </script>
-</body>
 
-</html>
+        <script>
+            const WHATSAPP = '573209133126';
+
+            function $(selector) {
+                return document.querySelector(selector);
+            }
+
+            function enviar(ev) {
+                ev.preventDefault();
+
+                const nombre = $('#nombre');
+                const celular = $('#cel');
+                const servicio = $('#serv');
+                const mensaje = $('#msg');
+
+                if (!nombre || !celular || !servicio || !mensaje) {
+                    alert('No se encontraron todos los campos del formulario.');
+                    return false;
+                }
+
+                const texto = `Hola, soy ${nombre.value}. Celular: ${celular.value}. Servicio: ${servicio.value}. ${mensaje.value}`;
+
+                const url = 'https://wa.me/' + WHATSAPP + '?text=' + encodeURIComponent(texto);
+
+                window.open(url, '_blank');
+
+                return false;
+            }
+        </script>
+
+    </body>
+
+
+    </html>
