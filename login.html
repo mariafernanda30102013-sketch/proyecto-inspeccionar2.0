@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>Iniciar sesión · J&amp;M Inspecciones y Certificaciones</title>
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700;800&family=Public+Sans:wght@400;500;600&display=swap">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="inicio.css">
+</head>
+
+<body>
+    <header class="header">
+        <div class="header-content">
+            <a href="index.html" class="brand">
+                <img src="img/jym.png" alt="Logo J&M Inspecciones y Certificaciones">
+                <div><strong>J&amp;M</strong><span>Inspecciones y Certificaciones</span></div>
+            </a>
+            <nav class="navigation" aria-label="Menú principal">
+                <a href="index.html#inicio">Inicio</a>
+                <a href="index.html#servicios">Servicios</a>
+                <a href="index.html#nosotros">Sobre nosotros</a>
+                <a href="index.html#contacto">Contáctanos</a>
+            </nav>
+            <div class="access">
+                <a href="login.html" class="btn">Iniciar sesión</a>
+                <a href="registro.html" class="btn p">Registrarme</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="w">
+        <form class="card auth" onsubmit="return entrar(event)">
+            <h2>Iniciar sesión</h2>
+            <label for="e">Correo</label><input id="e" type="email" required>
+            <label for="p">Contraseña</label><input id="p" type="password" required>
+            <p class="msg" id="m"></p>
+            <button class="p" style="width:100%">Entrar</button>
+            <p class="mu" style="margin-top:12px;font-size:.85rem">Demo: admin@jim.co / admin123 · inspector@jim.co /
+                1234 · tecnico@jim.co / 1234</p>
+        </form>
+    </main>
+
+    <script src="datos.js"></script>
+    <script>
+        if (sesion()) location.href = 'portalusuario.html';   // si ya hay sesión, ir directo al portal
+
+        function entrar(ev) {
+            ev.preventDefault();
+            const u = db.u.find(x => x.e === $('#e').value.trim().toLowerCase() && x.p === $('#p').value);
+            if (!u) { $('#m').textContent = 'Correo o contraseña incorrectos.'; return false }
+            iniciar(u);
+            location.href = 'portalusuario.html';
+            return false;
+        }
+    </script>
+</body>
+
+</html>

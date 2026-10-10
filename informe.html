@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Informe · J&amp;M Inspecciones y Certificaciones</title>
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700;800&family=Public+Sans:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .header {
+      position: static
+    }
+
+    #doc {
+      width: 780px;
+      margin: 0 auto;
+      background: #fff;
+      color: #000;
+      font: 8px/1.25 Arial, Helvetica, sans-serif;
+      padding: 0
+    }
+
+    #doc * {
+      box-sizing: border-box
+    }
+
+    #doc .t {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: -1px
+    }
+
+    #doc .t td,
+    #doc .t th {
+      border: 1px solid #000;
+      padding: 1.5px 3px;
+      font-size: 8px;
+      vertical-align: middle;
+      color: #000;
+      text-align: left;
+      font-weight: 400;
+      background: #fff
+    }
+
+    #doc .bar {
+      background: #d9d9d9 !important;
+      font-weight: 700 !important;
+      text-align: center !important;
+      text-transform: uppercase;
+      font-size: 8.5px !important
+    }
+
+    #doc .c {
+      text-align: center !important
+    }
+
+    #doc .w {
+      width: 17px
+    }
+
+    #doc .cl {
+      width: 42px;
+      white-space: nowrap
+    }
+
+    #doc .sm td {
+      font-size: 6.5px;
+      text-align: center;
+      padding: 0 2px
+    }
+
+    #doc .l {
+      color: #222;
+      font-size: 7px
+    }
+
+    #doc .s {
+      font-size: 7px;
+      line-height: 1.25
+    }
+
+    #doc .cb {
+      display: inline-block;
+      width: 9px;
+      height: 9px;
+      border: 1px solid #000;
+      text-align: center;
+      line-height: 8px;
+      font-size: 8px;
+      font-weight: 700;
+      vertical-align: middle;
+      margin: 0 2px 0 4px
+    }
+
+    #doc .rt td,
+    #doc .rt th {
+      font-size: 6.3px;
+      padding: 1px 1px;
+      text-align: center
+    }
+
+    #doc .rt th {
+      background: #fff;
+      font-weight: 700
+    }
+
+    #doc .grid {
+      height: 120px;
+      background-color: #fff;
+      background-image: linear-gradient(#bbb 1px, transparent 1px), linear-gradient(90deg, #bbb 1px, transparent 1px);
+      background-size: 10px 10px;
+      text-align: center
+    }
+
+    #doc .grid img {
+      max-width: 100%;
+      max-height: 118px
+    }
+
+    #doc .fotos {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 6px
+    }
+
+    #doc .fotos figure {
+      margin: 0;
+      width: 48.5%
+    }
+
+    #doc .fotos img {
+      width: 100%;
+      height: auto;
+      border: 1px solid #000;
+      display: block
+    }
+
+    #doc .fotos figcaption {
+      font-size: 7.5px
+    }
+
+    #doc .sig img {
+      height: 46px;
+      max-width: 100%;
+      display: block
+    }
+  </style>
+</head>
+
+<body>
+  <header class="header noprint">
+    <div class="header-content">
+      <a href="index.html" class="brand"><img src="img/jym.png" alt="Logo J&M">
+        <div><strong>J&amp;M</strong><span>Inspecciones y Certificaciones</span></div>
+      </a>
+      <div class="sp"></div><a class="btn" href="portalusuario.html">← Volver al portal</a>
+    </div>
+  </header>
+  <main class="w">
+    <div class="row noprint" style="margin:18px 0" id="bar"></div>
+    <div class="tw">
+      <div id="doc"></div>
+    </div>
+  </main>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script src="datos.js"></script>
+  <script src="fr001.js"></script>
+  <script>
+    const me = sesion();
+    const id = new URLSearchParams(location.search).get('id'), v = me && V(id);
+    if (!me || !v || (me.r !== 'admin' && v.to !== me.e)) {
+      document.querySelector('main').innerHTML = `<div class="card auth"><h2>${me ? 'No se encontró el informe' : 'Primero inicia sesión'}</h2><a class="btn p" href="${me ? 'portalusuario.html' : 'login.html'}">${me ? 'Ir al portal' : 'Iniciar sesión'}</a></div>`;
+      throw new Error('Informe no disponible');
+    }
+    v.fr = v.fr || {}; v.dib = v.dib || {}; v.fotos = v.fotos || {};
+    const g = k => (v.fr[k] || [''])[0] || '', gs = k => v.fr[k] || [];
+    const cb = on => `<span class="cb">${on ? 'X' : ''}</span>`;
+    const op = (k, a) => a.map(x => `${cb(g(k) === x)}${x}`).join(' ');
+    const opm = (k, a) => a.map(x => `${cb(gs(k).includes(x))}${x}`).join(' ');
+    const lv = (l, x) => `<span class="l">${l}</span> <b>${E(x || '')}</b>`;
+    const hora = ms => new Date(ms).toLocaleString('es-CO');
+    const local = location.protocol === 'file:';   // en un archivo local los logos impedirían generar el PDF; en internet sí salen
+
+    /* ---------- Encabezado como el formato ---------- */
+    const logoJM = local ? '<b style="font-size:22px">J&amp;M</b>' : '<img src="img/jym.png" alt="J&M" style="height:46px" onerror="this.style.display=\'none\'">';
+    const logoON = local ? '<b style="font-size:13px;border:1px solid #000;padding:3px 6px">ONAC ACREDITADO</b>' : '<img src="img/onac.png" alt="ONAC acreditado" style="height:34px" onerror="this.style.display=\'none\'">';
+    const head = `<table class="t"><tr>
+<td class="c" style="width:16%">${logoJM}</td>
+<td class="c" style="width:21%">${logoON}<div class="s" style="margin-top:3px">${EMPRESA.acred}</div></td>
+<td class="c"><b style="font-size:12px">${EMPRESA.n}</b><br><span class="s">${EMPRESA.sub}</span><br><span class="s">${EMPRESA.l1}</span><br><span class="s">${EMPRESA.l2}</span></td>
+<td class="c" style="width:21%;padding:0"><div class="s" style="padding:2px">${EMPRESA.fr}<br>${EMPRESA.ft}<br>${EMPRESA.ver}</div><div style="border-top:1px solid #000;padding:2px"><span class="s">CONSECUTIVO:</span><br><b style="color:#c00;font-size:17px">${E(g('cons') || '—')}</b></div></td></tr></table>`;
+
+    /* ---------- Identificación ---------- */
+    const idt = `<table class="t"><tr><th colspan="4" class="bar" style="text-align:left!important">Identificación de la instalación<span style="float:right;font-weight:400;text-transform:none">Este informe reemplaza el informe número: <b>${E(g('repl'))}</b></span></th></tr>
+<tr><td>${lv('Nombre usuario:', g('nombre'))}</td><td>Uso: ${op('uso', ['Residencial', 'Comercial'])}</td><td>${lv('Categoría:', g('cat'))}</td><td rowspan="5" class="c" style="width:15%"><span class="l">Hora inicio insp:</span><br><b style="font-size:11px">${E(g('hini'))}</b><br><br><span class="l">Hora final insp:</span><br><b style="font-size:11px">${E(g('hfin'))}</b></td></tr>
+<tr><td>${lv('ID usuario:', g('idu'))}</td><td>${lv('Ciudad / Municipio:', g('ciudad'))}</td><td>Etapa del regulador: ${op('etapa', ['Única Et', '1ra Et', '2da Et', '3ra Et'])}</td></tr>
+<tr><td>${lv('Dirección:', g('dir'))}</td><td>${lv('Nro medidor:', g('nmed'))}</td><td>${lv('Marca medidor:', g('mmed'))}</td></tr>
+<tr><td>${lv('Correo electrónico:', g('mail'))}</td><td>${lv('Lectura medidor (m³):', g('lmed'))}</td><td>Tipo de gas: ${op('gas', ['GN', 'GLP'])}</td></tr>
+<tr><td>${lv('Distribuidor:', g('dist'))}</td><td>${lv('Teléfonos:', g('tel'))}</td><td>Validar riesgos según I-004 Instructivo Inspección Segura: ${op('riesgos', ['SI', 'NO'])}</td></tr>
+<tr><td>Instancia:<br>${op('instancia', ['Primera visita', 'Visita complementaria'])}</td><td>Motivo de inspección:<br>${op('motivo', ['Revisión periódica', 'Solicitud del usuario'])}</td><td>Tipo vivienda:<br>${op('viv', ['Unifamiliar', 'Multifamiliar'])}</td><td>Informe anterior: ${op('ant', ['SI', 'NO'])}<br>${lv('Fecha:', g('antf'))}</td></tr>
+<tr><td colspan="2">${lv('Emitido por OI:', g('antoi'))}</td><td colspan="2">${lv('Fecha de puesta en servicio:', g('fps'))}</td></tr></table>`;
+
+    /* ---------- Secciones con casillas SI / NO / N/A ---------- */
+    const secT = s => `<table class="t"><tr><th colspan="5" class="bar">${s.t}</th></tr><tr class="sm"><td colspan="3">CUMPLE</td><td colspan="2" rowspan="1"></td></tr><tr class="sm"><td>SI</td><td>NO</td><td>N/A</td><td colspan="2"></td></tr>${s.it.map((it, i) => { const a = g(`s_${s.id}_${i}`); return `<tr><td class="c w"><b>${a === 'SI' ? 'X' : ''}</b></td><td class="c w"><b>${a === 'NO' ? 'X' : ''}</b></td><td class="c w"><b>${a === 'N/A' ? 'X' : ''}</b></td><td class="cl">${it[0] === 'c' ? 'Crítico' : 'No crítico'}</td><td>${E(it[1])}${(it[2] || []).map(([k, l]) => ` &nbsp;<b>${E(l)}:</b> ${E(g(`s_${s.id}_${i}_${k}`) || '—')}`).join('')}</td></tr>` }).join('')}</table>`;
+    const S = k => secT(SEC.find(s => s.id === k));
+
+    /* ---------- Recintos y artefactos ---------- */
+    const th = (t, r) => `<th${r ? ` rowspan="${r}"` : ''}>${t}</th>`;
+    const rows = Array.from({ length: v.nrec || 1 }, (_, i) => {
+      const p = `r${i}_`, ar = [1, 2, 3, 4].filter(m => g(p + 'a' + m) || g(p + 'k' + m)), n = Math.max(1, ar.length), M = g(p + 'met'), an = gs(p + 'anx');
+      const rs = t => `<td rowspan="${n}">${E(t)}</td>`, mx = m => rs(M === m ? 'X' : '');
+      const rest = rs(g(p + 'pt')) + rs(g(p + 'vol')) + mx('Estándar') + mx('Comunicación entre espacios') + mx('Comunicación entre piezas') + rs(M === 'Volumen adyacente' ? (g(p + 'vadj') || 'X') : '') + mx('Método 1') + mx('Método 2') + mx('Al exterior') + rs(g(p + 'smin')) + rs(g(p + 'sab')) + rs(g(p + 'imin')) + rs(g(p + 'iab')) + rs(g(p + 'fac')) + rs(g(p + 'mono')) + ANEXOS.map(x => rs(an.includes(x) ? 'X' : '')).join('');
+      return Array.from({ length: n }, (_, j) => { const m = ar[j]; return '<tr style="height:16px">' + (j === 0 ? rs(L[i]) + rs(g(p + 'desc')) + rs(g(p + 'coamb')) : '') + `<td>${m ? E(g(p + 'a' + m)) : ''}</td><td>${m ? E(g(p + 'k' + m)) : ''}</td><td>${m ? E(g(p + 'c' + m)) : ''}</td>` + (j === 0 ? rest : '') + '</tr>' }).join('')
+    }).join('');
+    const recT = `<table class="t rt"><tr><th colspan="26" class="bar">Recintos y artefactos encontrados</th></tr>
+<tr>${th('Rec.', 2)}${th('Descripción', 2)}${th('CO amb. sin artef. (ppm)', 2)}${th('Artefactos instalados o previstos', 2)}${th('Potencia (kW)', 2)}${th('Valor prueba CO', 2)}${th('Potencia total (kW)', 2)}${th('Vol. disp. (m³)', 2)}<th colspan="6">Método de ventilación · En el interior</th>${th('Al ext.', 2)}<th colspan="2">Superior</th><th colspan="2">Inferior</th>${th('Factor de reducción', 2)}${th('Cumple monoes.', 2)}<th colspan="5">Anexos NTC 3631 · Vacíos internos</th></tr>
+<tr>${['Estándar', 'Com. entre espacios', 'Com. entre piezas', 'Vol. adyac. (m³)', 'Mét. 1', 'Mét. 2', 'Área mín. (cm²)', 'Área aber. (cm²)', 'Área mín. (cm²)', 'Área aber. (cm²)', '1 a 6 pisos', '> a 7 pisos', 'Venti-lación', 'Evacu-ación', 'Combi-nado'].map(x => th(x)).join('')}</tr>${rows}</table>`;
+    const post = `<table class="t"><tr><td>Cumple vacío interno: ${op('vacio', TRI)}</td><td>${lv('Número de ductos que evacuan al vacío interno:', g('nduc'))}</td></tr>
+<tr><td>La edificación fue proyectada o construida antes del 25/04/2014: ${op('a2014', TRI)}</td><td>${lv('Fecha de licencia de construcción o escritura del inmueble:', g('lic'))}</td></tr>
+<tr><td colspan="2">Informa al usuario la necesidad de realizar la próxima inspección en un plazo no mayor a tres (3) años: ${op('prox3', TRI)}</td></tr></table>`;
+
+    /* ---------- Dibujos, materiales y observaciones ---------- */
+    const dibT = `<table class="t"><tr><th class="bar" style="width:50%">Isométrico</th><th class="bar">Esquema en planta de los recintos</th></tr><tr><td class="grid">${v.dib.iso ? `<img src="${v.dib.iso}" alt="">` : ''}</td><td class="grid">${v.dib.esq ? `<img src="${v.dib.esq}" alt="">` : ''}</td></tr></table>
+<table class="t"><tr><td>Materiales: ${opm('mat', MATERIALES)}</td></tr><tr><td>Diámetros de las tuberías: ${opm('diam', DIAM)}</td></tr>
+<tr><td>Tipo de instalación: ${op('tinst', ['A la vista', 'Oculta'])} &nbsp; ${lv('Longitud:', g('longi'))} mt</td></tr></table>
+<table class="t"><tr><td style="width:50%;height:44px;vertical-align:top"><span class="l">Observaciones o detalle de hallazgos:</span><br>${E(g('obs'))}</td><td style="vertical-align:top"><span class="l">Aspectos para el distribuidor (no afectan la conformidad):</span><br>${E(g('obsd'))}</td></tr></table>`;
+
+    /* ---------- Cierre: documento, equipos, resultados, firmas ---------- */
+    const acc = a => `<div>${cb(gs('acc').includes(a))}${a}</div>`;
+    const cierre = `<table class="t"><tr>
+<td style="width:34%;vertical-align:top"><b>ESTE DOCUMENTO CONSTITUYE</b><br>${cb(g('constit') === 'Certificado de conformidad')}Certificado de conformidad<br>${cb(g('constit') === 'Informe de inspección')}Informe de inspección<br>${lv('Fecha de inspección y emisión:', g('femis'))}<br><br><b>RESULTADOS DE LA INSPECCIÓN</b><br>${cb(g('res') === 'Sin defectos')}Sin defectos<br>${cb(g('res') === 'Defectos críticos')}Defectos críticos &nbsp;${lv('Radicado N°:', g('rad'))}<br>${cb(g('res') === 'Defectos no críticos')}Defectos no críticos</td>
+<td style="width:33%;vertical-align:top">Matriz inspeccionada: ${op('matriz', TRI)}<br>${lv('OIA:', g('oia'))}<br>${lv('Consecutivo:', g('oiac'))}<br>${lv('Fecha:', g('oiaf'))}<br><br>${acc('Se toman registros fotográficos')}${acc('Se realiza reconexión temporal del servicio')}${['La instalación continúa en servicio', 'La instalación quedó sin servicio'].map(x => `<div>${cb(g('serv') === x)}${x}</div>`).join('')}</td>
+<td style="vertical-align:top"><b>EQUIPOS UTILIZADOS</b><br>${EQUIPOS.map(([n, l]) => lv(l + ':', g(n))).join('<br>')}<br><br>${['Se brinda al cliente la información de las condiciones del servicio', 'Se informa al cliente el resultado de la inspección', 'Se informa al usuario acerca de dispositivos de CO', 'Se pega etiqueta de certificación', 'Se informa al distribuidor de inmediato los defectos críticos'].map(acc).join('')}</td></tr></table>
+<table class="t"><tr><th class="bar" style="text-align:left!important">Resultado de la inspección: &nbsp; ${cb(g('conf') === 'CONFORME')}CONFORME &nbsp; ${cb(g('conf') === 'NO CONFORME')}NO CONFORME</th></tr></table>
+<table class="t sig"><tr><td style="width:50%;vertical-align:top"><span class="s">Declaro y acepto que conozco el resultado de la inspección</span><br>${lv('Nombre:', g('unom'))}<br><span class="l">Firma:</span>${v.dib.fu ? `<img src="${v.dib.fu}" alt="">` : '<br><br>'}${lv('Cédula:', g('ucc'))} &nbsp; ${lv('Vínculo:', g('uvinc'))}</td>
+<td style="vertical-align:top"><b>DATOS DEL INSPECTOR</b><br>${lv('Nombre y apellido:', g('inom'))}<br><span class="l">Firma:</span>${v.dib.fi ? `<img src="${v.dib.fi}" alt="">` : '<br><br>'}${lv('CCL:', g('iccl'))} &nbsp; ${lv('Cédula:', g('icc'))} &nbsp; ${lv('Expedido por:', g('iexp'))}</td></tr></table>`;
+
+    const fotos = `<div class="html2pdf__page-break"></div>${head}<table class="t"><tr><th class="bar">Registro fotográfico · Consecutivo ${E(g('cons') || '—')}</th></tr></table><div class="fotos">${PASOS.filter(p => v.fotos[p.k]).map(p => { const f = v.fotos[p.k]; return `<figure><img src="${f.img}" alt=""><figcaption><b>${p.t}</b> · ${hora(f.ms)}${f.lat !== null ? ` · ${f.lat}, ${f.lng}` : ''}</figcaption></figure>` }).join('') || '<p>Sin fotos.</p>'}</div>`;
+
+    $('#doc').innerHTML = head + idt + S('he') + S('vc') + S('tr') + recT + post + S('ma') + S('ve') + S('co') + S('ub') + dibT + cierre + fotos;
+
+    /* ---------- Botones ---------- */
+    const tel = String(g('tel') || v.t || '').replace(/\D/g, '');
+    const wa = `https://wa.me/57${tel}?text=${encodeURIComponent('Hola ' + (g('nombre') || v.c) + ', le enviamos el informe de la revisión de su instalación de gas natural (consecutivo ' + (g('cons') || '—') + '). Resultado: ' + (g('conf') || '—') + '. J&M Inspección y Certificación.')}`;
+    $('#bar').innerHTML = `<button class="p" onclick="pdf()">Descargar PDF</button><a class="btn" href="${wa}" target="_blank" rel="noopener">Enviar por WhatsApp</a>${v.to === me.e && v.s !== 'anulada' ? `<a class="btn" href="visita.html?id=${id}">Corregir informe</a>` : ''}<button onclick="print()">Imprimir</button>`;
+    function pdf() {
+      if (typeof html2pdf === 'undefined') { alert('Para descargar el PDF se necesita conexión a internet. Se abrirá la impresión: elige "Guardar como PDF".'); print(); return }
+      const b = $('#bar button'); b.disabled = true; b.textContent = 'Generando PDF…';
+      const fin = () => { b.disabled = false; b.textContent = 'Descargar PDF' };
+      html2pdf().set({ margin: [6, 6, 6, 6], filename: 'Informe-' + (g('cons') || id) + '.pdf', image: { type: 'jpeg', quality: .92 }, html2canvas: { scale: 2, useCORS: true, windowWidth: 820 }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }, pagebreak: { mode: ['css', 'legacy'], avoid: ['tr', 'figure'] } })
+        .from($('#doc')).save().then(fin).catch(() => { fin(); alert('No se pudo generar el PDF. Usa "Imprimir" y elige "Guardar como PDF".') });
+    }
+  </script>
+</body>
+
+</html>
